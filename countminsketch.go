@@ -26,6 +26,9 @@ func New(k, n uint) *CountMinSketch {
 func NewWithEstiments(epsilon, delta float64) *CountMinSketch {
 	// Column = e/ε size of array
 	// Row = ln (1/δ) number of functions
+	//ε (Epsilon) is “how much error is added to our counts with each item we add to the cm sketch”.
+	//δ (Delta) is “with what probability do we want to allow the count estimate to be outside of our epsilon error rate”
+
 	k := uint(math.Ceil(math.Log(math.E / delta)))
 	n := uint(math.Ceil(math.E / epsilon))
 	return &CountMinSketch{

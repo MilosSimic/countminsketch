@@ -3,17 +3,31 @@ package main
 import (
 	"github.com/spaolacci/murmur3"
 	"hash"
+	"math"
 	"time"
 )
 
 type CountMinSketch struct {
 	k      uint          // number of hash functions
-	n      uint          // number of elements in sketch
+	n      uint          // size of array
 	sketch [][]uint      // just sketch
 	h      []hash.Hash32 // hash functions
 }
 
 func New(k, n uint) *CountMinSketch {
+	return &CountMinSketch{
+		k:      k,
+		n:      n,
+		sketch: initSketch(k, n),
+		h:      fns(k),
+	}
+}
+
+func NewWithEstiments(epsilon, delta float64) *CountMinSketch {
+	// Column = e/ε size of array
+	// Row = ln (1/δ) number of functions
+	k := uint(math.Ceil(math.Log(math.E / delta)))
+	n := uint(math.Ceil(math.E / epsilon))
 	return &CountMinSketch{
 		k:      k,
 		n:      n,
